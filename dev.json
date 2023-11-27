@@ -1,0 +1,14 @@
+{
+    "script": "index.js",
+    "watch": true,
+    "ignore_watch": [
+        "app/public"
+    ],
+    "watch_options": {
+        "followSymlinks": false
+    },
+    "name": "ttm_api",
+    "env": {
+        "NODE_ENV": "development"
+    }
+}

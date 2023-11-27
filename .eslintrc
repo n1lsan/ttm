@@ -1,0 +1,15 @@
+{
+    "extends": "airbnb-base",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "globals": {
+        "$": true,
+        "jQuery": true,
+        "FilePond": true
+    },
+    "rules": {
+        "linebreak-style": 0
+    }
+}

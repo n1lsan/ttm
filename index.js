@@ -3,7 +3,7 @@
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 // const { PrismaClient } = require('@prisma/client');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 // const prisma = new PrismaClient();
 const app = express();

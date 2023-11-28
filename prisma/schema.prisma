@@ -18,6 +18,8 @@ model field_changes {
   created_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
   updated_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
   filed_name String   @db.VarChar
+  project_id BigInt
+  projects   projects @relation(fields: [project_id], references: [id], onDelete: NoAction)
   tasks      tasks    @relation(fields: [task_id], references: [id], onDelete: NoAction)
   users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction)
 }
@@ -25,11 +27,13 @@ model field_changes {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model projects {
-  id         BigInt   @id @unique @default(autoincrement())
-  name       String?  @db.VarChar
-  created_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
-  updated_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
-  tasks      tasks[]
+  id            BigInt          @id @unique @default(autoincrement())
+  name          String?         @db.VarChar
+  created_at    DateTime        @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
+  updated_at    DateTime        @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
+  shorthand     String          @db.VarChar
+  field_changes field_changes[]
+  tasks         tasks[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

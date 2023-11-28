@@ -2,10 +2,10 @@
 
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
-// const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const bodyParser = require('body-parser');
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -18,11 +18,70 @@ app.get('/', async (req, res) => {
   });
 });
 
-app.post('/api/v1/youtrack/minerva', async (req, res) => {
+app.post('/api/youtrack/tasks', async (req, res) => {
+  const request = req.body;
+
+  let systemId;
+  let projectId;
+  let taskNew;
+
   try {
-    // const allusers = await prisma.user.findMany();
-    console.log(req.body);
-    return res.json(req.body);
+    const system = await prisma.systems.findFirst({
+      where: {
+        name: request.system,
+      },
+    });
+
+    if (system <= 0) {
+      systemId = await prisma.systems.create({
+        data: {
+          name: request.system,
+        },
+      });
+      systemId = systemId.id;
+    } else {
+      systemId = system.id;
+    }
+
+    const project = await prisma.projects.findFirst({
+      where: {
+        name: request.project,
+      },
+    });
+
+    if (project <= 0) {
+      projectId = await prisma.projects.create({
+        data: {
+          name: request.project,
+          shorthand: request.shorthand,
+        },
+      });
+      projectId = projectId.id;
+    } else {
+      projectId = project.id;
+    }
+
+    const task = await prisma.tasks.findFirst({
+      where: {
+        task_id: request.task_id,
+      },
+    });
+
+    if (task <= 0) {
+      taskNew = await prisma.tasks.create({
+        data: {
+          task_id: request.task_id,
+          title: request.title,
+          description: request.description,
+          created_timestamp: request.created,
+          resolved_timestamp: request.resolved,
+        },
+      });
+    }
+
+    return res.status(200).json({
+      message: 'success',
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({

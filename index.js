@@ -3,7 +3,7 @@
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { PrismaClient } = require('@prisma/client');
-const set = require('date-fns/set');
+// const set = require('date-fns/set');
 const bodyParser = require('body-parser');
 
 const prisma = new PrismaClient();
@@ -69,6 +69,16 @@ app.post('/api/youtrack/tasks', async (req, res) => {
     });
 
     if (task <= 0) {
+      const { created, resolved } = request;
+      const createdISO = new Date(created).toISOString();
+
+      let resolvedISO;
+      if (resolved) {
+        resolvedISO = new Date(resolved).toISOString();
+      } else {
+        resolvedISO = null;
+      }
+
       taskNew = await prisma.tasks.create({
         data: {
           system_id: systemId,
@@ -76,8 +86,8 @@ app.post('/api/youtrack/tasks', async (req, res) => {
           task_id: request.task_id,
           title: request.title,
           description: request.description,
-          created_timestamp: set(request.created),
-          resolved_timestamp: set(request.resolved),
+          created_timestamp: createdISO,
+          resolved_timestamp: resolvedISO,
         },
       });
     }
@@ -88,7 +98,7 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       message: 'success',
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return res.status(500).json({
       message: 'Internal Server Error',
     });

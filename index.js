@@ -3,7 +3,7 @@
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { PrismaClient } = require('@prisma/client');
-import set = require('date-fns/set');
+const set = require('date-fns/set');
 const bodyParser = require('body-parser');
 
 const prisma = new PrismaClient();

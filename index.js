@@ -13,12 +13,14 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
+// Заглушка для проверки
 app.get('/', async (req, res) => {
   res.status(200).json({
     message: 'Hello world!',
   });
 });
 
+// Основная инфа о задаче/проекте/системе
 app.post('/api/youtrack/tasks', async (req, res) => {
   const request = req.body;
 
@@ -100,8 +102,9 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       const { created, resolved } = request;
       const createdISO = new Date(created).toISOString();
       const dateNow = `${new Date().toISOString().slice(0, 19)}Z`;
-      console.log(dateNow + createdISO);
+
       let resolvedISO;
+
       if (resolved) {
         resolvedISO = new Date(resolved).toISOString();
       } else {
@@ -126,13 +129,64 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       message: 'success',
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       message: 'Internal Server Error',
     });
   }
 });
 
+// информация о свойствах полей
+app.post('/api/youtrack/fields', async (req, res) => {
+  const request = req.body;
+
+  try {
+    const project = await prisma.projects.findFirst({
+      where: {
+        name: request.project,
+      },
+    });
+
+    let user = await prisma.users.findFirst({
+      where: {
+        login: request.user,
+      },
+    });
+
+    if (!user) {
+      user = await prisma.users.create({
+        data: {
+          login: request.user,
+        },
+      });
+    }
+
+    const task = await prisma.tasks.findFirst({
+      where: {
+        task_id: request.task_id,
+      },
+    });
+
+    const field = await prisma.field_changes.create({
+      data: {
+        project_id: project.id,
+        task_id: task.id,
+        user_id: user.id,
+        filed_name: request.field_name,
+        was: request.was,
+        becomes: request.becomes,
+      },
+    });
+
+    return res.status(200).json({
+      message: 'success',
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+});
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`🚀 Development is running on port ${PORT}.`);

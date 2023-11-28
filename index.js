@@ -3,6 +3,7 @@
 const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { PrismaClient } = require('@prisma/client');
+import set = require('date-fns/set');
 const bodyParser = require('body-parser');
 
 const prisma = new PrismaClient();
@@ -75,8 +76,8 @@ app.post('/api/youtrack/tasks', async (req, res) => {
           task_id: request.task_id,
           title: request.title,
           description: request.description,
-          created_timestamp: request.created,
-          resolved_timestamp: request.resolved,
+          created_timestamp: set(request.created),
+          resolved_timestamp: set(request.resolved),
         },
       });
     }

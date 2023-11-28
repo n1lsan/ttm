@@ -70,6 +70,8 @@ app.post('/api/youtrack/tasks', async (req, res) => {
     if (task <= 0) {
       taskNew = await prisma.tasks.create({
         data: {
+          system_id: systemId,
+          project_id: projectId,
           task_id: request.task_id,
           title: request.title,
           description: request.description,

@@ -53,7 +53,7 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       projectId = await prisma.projects.create({
         data: {
           name: request.project,
-          shorthand: request.shorthand,
+          shorthand: request.projectShorthand,
         },
       });
       projectId = projectId.id;

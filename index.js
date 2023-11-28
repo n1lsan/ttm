@@ -68,7 +68,13 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       },
     });
 
-    if (task <= 0) {
+    if (task) {
+      console.log(task.id);
+    } else {
+      console.log('no task');
+    }
+    
+    if (!task) {
       const { created, resolved } = request;
       const createdISO = new Date(created).toISOString();
 
@@ -90,9 +96,31 @@ app.post('/api/youtrack/tasks', async (req, res) => {
           resolved_timestamp: resolvedISO,
         },
       });
-    }
+    } else if (task) {
+      const { created, resolved } = request;
+      const createdISO = new Date(created).toISOString();
+      const dateNow = `${new Date().toISOString().slice(0, 19)}Z`;
+      console.log(dateNow + createdISO);
+      let resolvedISO;
+      if (resolved) {
+        resolvedISO = new Date(resolved).toISOString();
+      } else {
+        resolvedISO = null;
+      }
 
-    console.log(taskNew);
+      const taskUpdate = await prisma.tasks.update({
+        where: {
+          id: task.id,
+        },
+        data: {
+          title: request.title,
+          description: request.description,
+          created_timestamp: createdISO,
+          resolved_timestamp: resolvedISO,
+          updated_at: dateNow,
+        },
+      });
+    }
 
     return res.status(200).json({
       message: 'success',

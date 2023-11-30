@@ -6,7 +6,19 @@ const { PrismaClient } = require('@prisma/client');
 // const set = require('date-fns/set');
 const bodyParser = require('body-parser');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+  ],
+});
+
+prisma.$on('query', async (e) => {
+  console.log(`${e.query} ${e.params}`)
+});
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

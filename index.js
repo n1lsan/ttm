@@ -6,19 +6,7 @@ const { PrismaClient } = require('@prisma/client');
 // const set = require('date-fns/set');
 const bodyParser = require('body-parser');
 
-const prisma = new PrismaClient({
-  log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-  ],
-});
-
-prisma.$on('query', async (e) => {
-  console.log(`${e.query} ${e.params}`)
-});
-
+const prisma = new PrismaClient();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -26,7 +14,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // Заглушка для проверки
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Hello world!',
   });
@@ -222,8 +210,8 @@ app.post('/api/youtrack/tags', async (req, res) => {
         task_id: request.task_id,
       },
     });
-
-    await prisma.tag_changes.create({
+    console.log(request);
+    const tag = await prisma.tag_changes.create({
       data: {
         project_id: project.id,
         task_id: task.id,
@@ -232,7 +220,7 @@ app.post('/api/youtrack/tags', async (req, res) => {
         action: request.action,
       },
     });
-
+    console.log(tag);
     return res.status(200).json({
       message: 'success',
     });

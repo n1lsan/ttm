@@ -210,7 +210,7 @@ app.post('/api/youtrack/tags', async (req, res) => {
         task_id: request.task_id,
       },
     });
-
+    console.log(request);
     const tag = await prisma.tag_changes.create({
       data: {
         project_id: project.id,
@@ -220,6 +220,7 @@ app.post('/api/youtrack/tags', async (req, res) => {
         action: request.action,
       },
     });
+    console.log(tag);
 
     return res.status(200).json({
       message: 'success',

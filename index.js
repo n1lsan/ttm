@@ -187,6 +187,56 @@ app.post('/api/youtrack/fields', async (req, res) => {
     });
   }
 });
+
+app.post('/api/youtrack/tags', async (req, res) => {
+  const request = req.body;
+
+  try {
+    const project = await prisma.projects.findFirst({
+      where: {
+        name: request.project,
+      },
+    });
+
+    let user = await prisma.users.findFirst({
+      where: {
+        login: request.user,
+      },
+    });
+
+    if (!user) {
+      user = await prisma.users.create({
+        data: {
+          login: request.user,
+        },
+      });
+    }
+
+    const task = await prisma.tasks.findFirst({
+      where: {
+        task_id: request.task_id,
+      },
+    });
+
+    const tag = await prisma.tag_changes.create({
+      data: {
+        project_id: project.id,
+        task_id: task.id,
+        user_id: user.id,
+        name: request.name,
+        action: request.action,
+      },
+    });
+
+    return res.status(200).json({
+      message: 'success',
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+});
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`🚀 Development is running on port ${PORT}.`);

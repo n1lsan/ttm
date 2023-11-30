@@ -210,7 +210,7 @@ app.post('/api/youtrack/tags', async (req, res) => {
         task_id: request.task_id,
       },
     });
-    console.log(project.id + task.id + user.id + request.name + request.action);
+    console.log(`${project.id} I ${task.id} I ${user.id} I ${request.name} I ${request.action}`);
     const tag = await prisma.tag_changes.create({
       data: {
         project_id: project.id,

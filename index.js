@@ -70,12 +70,6 @@ app.post('/api/youtrack/tasks', async (req, res) => {
       },
     });
 
-    if (task) {
-      console.log(task.id);
-    } else {
-      console.log('no task');
-    }
-    
     if (!task) {
       const { created, resolved } = request;
       const createdISO = new Date(created).toISOString();
@@ -181,7 +175,6 @@ app.post('/api/youtrack/fields', async (req, res) => {
       message: 'success',
     });
   } catch (err) {
-    console.log(err.message);
     return res.status(500).json({
       message: 'Internal server error',
     });
@@ -227,6 +220,8 @@ app.post('/api/youtrack/tags', async (req, res) => {
         action: request.action,
       },
     });
+
+    console.log(tag);
 
     return res.status(200).json({
       message: 'success',

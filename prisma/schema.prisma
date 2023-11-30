@@ -31,8 +31,9 @@ model projects {
   name          String?         @db.VarChar
   created_at    DateTime        @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
   updated_at    DateTime        @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
-  shorthand     String          @db.VarChar
+  shorthand     String?         @db.VarChar
   field_changes field_changes[]
+  tag_changes   tag_changes[]
   tasks         tasks[]
 }
 
@@ -56,6 +57,8 @@ model tag_changes {
   action     String   @db.VarChar
   created_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
   updated_at DateTime @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamp(6)
+  project_id BigInt
+  projects   projects @relation(fields: [project_id], references: [id], onDelete: NoAction)
   tasks      tasks    @relation(fields: [task_id], references: [id], onDelete: NoAction)
   users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction)
 }

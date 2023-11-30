@@ -183,7 +183,7 @@ app.post('/api/youtrack/fields', async (req, res) => {
 
 app.post('/api/youtrack/tags', async (req, res) => {
   const request = req.body;
-  console.log('tags');
+
   try {
     const project = await prisma.projects.findFirst({
       where: {
@@ -211,7 +211,6 @@ app.post('/api/youtrack/tags', async (req, res) => {
       },
     });
 
-    console.log('before');
     const tag = await prisma.tag_changes.create({
       data: {
         project_id: project.id,

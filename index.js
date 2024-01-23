@@ -139,7 +139,7 @@ app.post('/api/youtrack/fields', async (req, res) => {
         name: request.project,
       },
     });
-
+ 
     let user = await prisma.users.findFirst({
       where: {
         login: request.user,
